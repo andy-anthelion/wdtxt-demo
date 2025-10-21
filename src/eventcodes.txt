@@ -1,0 +1,17 @@
+
+Server Events
+
+User Events (101-199)
+
+  - 101: Users
+    GALN+  - User logged in
+    GALN-  - User logged out
+
+Message Events (201-299)
+
+  - 201: New Message
+    timestamp - Unix seconds
+    from      - GALN id
+    message   - Message info
+    nonce     - Unique identifier of message
+    to        - GALN id

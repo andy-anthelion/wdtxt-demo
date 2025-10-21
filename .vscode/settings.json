@@ -1,0 +1,12 @@
+{
+    "typescript.suggest.completeJSDocs": false,
+    "javascript.suggest.enabled": false,
+    "typescript.suggest.enabled": false,
+    "github.copilot.chat.agent.autoFix": false,
+    "github.copilot.chat.agent.runTasks": true,
+    "github.copilot.renameSuggestions.triggerAutomatically": false,
+    "github.copilot.enable": {
+        "*": false
+    },
+    "postman.settings.dotenv-detection-notification-visibility": false
+}

@@ -1,0 +1,25 @@
+name: wdtxt
+description: Basic command line based interface for WD.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.9.2
+
+# Add regular dependencies here.
+dependencies:
+  path: ^1.9.0
+  args: ^2.7.0
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
+  jwt_decoder: ^2.0.1
+  result_dart: ^2.1.1
+  async: ^2.13.0
+  meta: ^1.17.0
+
+dev_dependencies:
+  build_runner: ^2.8.0
+  freezed: ^3.2.3
+  json_serializable: ^6.11.1
+  lints: ^6.0.0
+  test: ^1.25.6
