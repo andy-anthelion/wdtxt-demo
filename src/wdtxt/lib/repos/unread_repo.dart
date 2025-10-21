@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 
-import 'package:wdtxt/models/contact/contact.dart';
+import 'package:wdtxt/models/conversation/conversation.dart';
 import 'package:wdtxt/models/events/events.dart';
 import 'package:wdtxt/services/api_service.dart';
 
@@ -25,7 +25,7 @@ class UnreadRepo {
 
   final ApiService _apiService;
 
-  final Map<Contact,int> _cachedUnread = {};
+  final Map<Conversation,int> _cachedUnread = {};
   
   final StreamController<UserEvent> _unreadUEC = StreamController<UserEvent>();
   Function(UserEvent) get unreadSendEvent => _unreadUEC.sink.add;
@@ -50,8 +50,8 @@ class UnreadRepo {
     }
   }
 
-  int getUnreadCountOf(Contact contact) {
-    return _cachedUnread[contact] ?? 0;
+  int getUnreadCountOf(Conversation convo) {
+    return _cachedUnread[convo] ?? 0;
   }
 
 }
