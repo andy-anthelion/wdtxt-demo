@@ -1,15 +1,13 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:args/args.dart';
 
-// import 'package:result_dart/result_dart.dart';
-
-import 'package:wdtxt/models/contact/contact.dart';
-import 'package:wdtxt/models/conversation/conversation.dart';
-
 import 'package:wdtxt/repos/auth_repo.dart';
-import 'package:wdtxt/repos/location_repo.dart';
 import 'package:wdtxt/repos/contact_repo.dart';
+import 'package:wdtxt/repos/location_repo.dart';
+import 'package:wdtxt/repos/message_repo.dart';
+import 'package:wdtxt/repos/unread_repo.dart';
 import 'package:wdtxt/services/api_service.dart';
 import 'package:wdtxt/services/event_service.dart';
 import 'package:wdtxt/services/location_service.dart';
@@ -47,14 +45,15 @@ class WDTXT {
     ContactRepo contact = ContactRepo(
       apiService: apiService
     );
+
+    MessageRepo message = MessageRepo(
+      apiService: apiService
+    );
+
+    UnreadRepo unread = UnreadRepo(
+      apiService: apiService
+    );
     
-
-    Conversation bothAB = Conversation(id1: "+23USCA.MaryJane....", id2: "-25USNY.JohnDoe.....");
-    Conversation bothBA = Conversation(id1: "-25USNY.JohnDoe.....", id2: "+23USCA.MaryJane....");
-    print("AB : ${bothAB.alpha} ,${bothAB.beta} ");
-    print("BA : ${bothBA.alpha} ,${bothBA.beta} ");
-
-
 
     var parser = ArgParser();
     
@@ -63,16 +62,10 @@ class WDTXT {
       negatable: false,
       help: 'Display this help message');
       
-    parser.addOption('name',
-      help: 'Your name');
-    parser.addOption('age',
-      help: 'Your age',
-      valueHelp: 'number');
-    parser.addOption('gender',
-      help: 'Your gender (single character)',
-      valueHelp: 'character');
-    parser.addOption('location',
-      help: 'Your location');
+    parser.addOption('name', defaultsTo: 'JohnDoe', help: 'Your name');
+    parser.addOption('age', defaultsTo: '25', help: 'Your age', valueHelp: 'number');
+    parser.addOption('gender', defaultsTo: 'M', help: 'Your gender (single character)', valueHelp: 'character');
+    parser.addOption('location',defaultsTo: 'NY...', help: 'Your location');
 
     var results = parser.parse(arguments);
 
@@ -87,22 +80,37 @@ class WDTXT {
     print('Gender: ${results['gender']}');
     print('Location: ${results['location']}');
 
-    // infinte input loop to handle users and messages
-
-    await auth.login(
-      age: 25, 
-      gender: 'M', 
-      location: 'US...', 
-      name: 'JohnDoe'
+    var loginResult = await auth.login(
+      age: int.parse(results['age']), 
+      gender: results['gender'], 
+      location: results['location'], 
+      name: results['name']
     );
-    
-    Contact user = Contact(id: auth.info!['galn']);
-  
-    String locationName = (await locs.getLocationName(user.loc)).getOrDefault("");
-    print("${user.gender}, ${user.age}, $locationName, ${user.name}");
-    print(user.id);
 
-    print(contact.contacts());
+    if(loginResult.isError()) {
+      print("Unable to login: ${loginResult.exceptionOrNull()!.toString()} ");
+      return;
+    }
+
+    bool stillRunning = true;    
+    // infinte input loop to handle users and messages
+    while(stillRunning) {
+      print('\n=== Main Menu ===');
+      print('1) User');
+      print('2) Contacts');
+      print('3) Inbox');
+      print('\nEnter your choice (1-3) or (q)uit: ');
+
+      String? choice = stdin.readLineSync()?.toLowerCase();
+
+      switch(choice) {
+        case '1': break;
+        case '2': break;
+        case '3': break;
+        case 'q': stillRunning = false; break;
+        default: print('Invalid Option!');
+      }
+    }
 
     return;
   }
