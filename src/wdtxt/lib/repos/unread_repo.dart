@@ -41,7 +41,9 @@ class UnreadRepo {
     
     switch(event) {
       case ServerEventMessageDelivery():
-        // tbd
+        var convo = Conversation(id1: event.from, id2: event.to);
+        _cachedUnread.putIfAbsent(convo, () => 0);
+        _cachedUnread[convo] = _cachedUnread[convo]! + 1;
       case UserEvent():
         // _apiService.synchronize();
         print("UnreadRepo : nothing to do");
