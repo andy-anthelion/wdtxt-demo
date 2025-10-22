@@ -32,6 +32,23 @@ class WDTXT {
     stdin.readLineSync();
   }
 
+  static Future<void> handleContacts({
+    required AuthRepo auth,
+    required ContactRepo contact,
+    required LocationRepo location
+  }) async {
+
+    Contact user = Contact(id: auth.info!['galn']);
+    for(final (i, c) in contact.contacts().indexed) {
+      if (c == user) { continue; }
+      var place = (await location.getLocationName(c.loc)).getOrDefault("");
+      print("${i+1}) ${c.name} ${c.age} ${c.gender} - $place");
+    }
+
+    print("\npress enter key to continue...");
+    stdin.readLineSync();
+  }
+
   static Future<void> run(List<String> arguments) async {
     
     //
@@ -125,6 +142,7 @@ class WDTXT {
           await handleUser(auth: auth, location: locs);
           break;
         case '2':
+          await handleContacts(auth: auth, contact: contact, location: locs);
           break;
         case '3':
           break;
