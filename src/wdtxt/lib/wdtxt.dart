@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
+import 'package:wdtxt/models/contact/contact.dart';
+
 import 'package:wdtxt/repos/auth_repo.dart';
 import 'package:wdtxt/repos/contact_repo.dart';
 import 'package:wdtxt/repos/location_repo.dart';
@@ -13,8 +15,22 @@ import 'package:wdtxt/services/event_service.dart';
 import 'package:wdtxt/services/location_service.dart';
 
 class WDTXT {
-  
+
   WDTXT._();
+
+  static Future<void> handleUser({
+    required AuthRepo auth,
+    required LocationRepo location,
+  }) async {
+    Contact user = Contact(id: auth.info!['galn']);
+    String place = (await location.getLocationName(user.loc)).getOrDefault("");
+
+    print("\n=== User ===");
+    print("${user.name}, ${user.age} ${user.gender}");
+    print(place);
+    print("\npress enter key to continue...");
+    stdin.readLineSync();
+  }
 
   static Future<void> run(List<String> arguments) async {
     
@@ -27,45 +43,46 @@ class WDTXT {
       eventTransformer: StreamTransformer.fromHandlers(
         handleData: eventService.handleData,
         handleError: eventService.handleError,
-        handleDone: eventService.handleDone
-      )
+        handleDone: eventService.handleDone,
+      ),
     );
 
     //
     // repos
     //
-    AuthRepo auth = AuthRepo(
-      apiService: apiService,
-    );
+    AuthRepo auth = AuthRepo(apiService: apiService);
 
-    LocationRepo locs = LocationRepo(
-      locationService: locationService
-    );
+    LocationRepo locs = LocationRepo(locationService: locationService);
 
-    ContactRepo contact = ContactRepo(
-      apiService: apiService
-    );
+    ContactRepo contact = ContactRepo(apiService: apiService);
 
-    MessageRepo message = MessageRepo(
-      apiService: apiService
-    );
+    MessageRepo message = MessageRepo(apiService: apiService);
 
-    UnreadRepo unread = UnreadRepo(
-      apiService: apiService
-    );
-    
+    UnreadRepo unread = UnreadRepo(apiService: apiService);
 
     var parser = ArgParser();
-    
-    parser.addFlag('help',
+
+    parser.addFlag(
+      'help',
       abbr: 'h',
       negatable: false,
-      help: 'Display this help message');
-      
+      help: 'Display this help message',
+    );
+
     parser.addOption('name', defaultsTo: 'JohnDoe', help: 'Your name');
-    parser.addOption('age', defaultsTo: '25', help: 'Your age', valueHelp: 'number');
-    parser.addOption('gender', defaultsTo: 'M', help: 'Your gender (single character)', valueHelp: 'character');
-    parser.addOption('location',defaultsTo: 'NY...', help: 'Your location');
+    parser.addOption(
+      'age',
+      defaultsTo: '25',
+      help: 'Your age',
+      valueHelp: 'number',
+    );
+    parser.addOption(
+      'gender',
+      defaultsTo: 'M',
+      help: 'Your gender (single character)',
+      valueHelp: 'character',
+    );
+    parser.addOption('location', defaultsTo: 'US...', help: 'Your location');
 
     var results = parser.parse(arguments);
 
@@ -81,20 +98,20 @@ class WDTXT {
     print('Location: ${results['location']}');
 
     var loginResult = await auth.login(
-      age: int.parse(results['age']), 
-      gender: results['gender'], 
-      location: results['location'], 
-      name: results['name']
+      age: int.parse(results['age']),
+      gender: results['gender'],
+      location: results['location'],
+      name: results['name'],
     );
 
-    if(loginResult.isError()) {
+    if (loginResult.isError()) {
       print("Unable to login: ${loginResult.exceptionOrNull()!.toString()} ");
       return;
     }
 
-    bool stillRunning = true;    
+    bool stillRunning = true;
     // infinte input loop to handle users and messages
-    while(stillRunning) {
+    while (stillRunning) {
       print('\n=== Main Menu ===');
       print('1) User');
       print('2) Contacts');
@@ -103,16 +120,22 @@ class WDTXT {
 
       String? choice = stdin.readLineSync()?.toLowerCase();
 
-      switch(choice) {
-        case '1': break;
-        case '2': break;
-        case '3': break;
-        case 'q': stillRunning = false; break;
-        default: print('Invalid Option!');
+      switch (choice) {
+        case '1':
+          await handleUser(auth: auth, location: locs);
+          break;
+        case '2':
+          break;
+        case '3':
+          break;
+        case 'q':
+          stillRunning = false;
+          break;
+        default:
+          print('Invalid Option!');
       }
     }
 
     return;
   }
-
 }
