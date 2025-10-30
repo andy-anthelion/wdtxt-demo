@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 
+import 'package:wdtxt/models/contact/contact.dart';
 import 'package:wdtxt/models/conversation/conversation.dart';
 import 'package:wdtxt/models/events/events.dart';
 import 'package:wdtxt/services/api_service.dart';
@@ -54,6 +55,19 @@ class UnreadRepo {
 
   int getUnreadCountOf(Conversation convo) {
     return _cachedUnread[convo] ?? 0;
+  }
+
+  Map<Contact, int> getAllUnread(Contact self) {
+    Map<Contact, int> allUnread = {};
+    _cachedUnread.forEach((convo, count) {
+      allUnread.putIfAbsent(
+        Contact(
+          id: convo.getContactID(self.id)
+        ), 
+        () => count
+      );
+    });
+    return allUnread;
   }
 
 }

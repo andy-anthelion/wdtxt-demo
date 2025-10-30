@@ -24,6 +24,10 @@ class Conversation {
     );
   }
 
+  String getContactID(String selfID) {
+    return (selfID == alpha) ? beta : alpha;
+  }
+
   @override
   String toString() {
     return 'Converstation($alpha, $beta)';
