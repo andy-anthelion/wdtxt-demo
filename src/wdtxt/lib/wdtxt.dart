@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 import 'package:wdtxt/models/contact/contact.dart';
+import 'package:wdtxt/models/events/events.dart';
 
 import 'package:wdtxt/repos/auth_repo.dart';
 import 'package:wdtxt/repos/contact_repo.dart';
@@ -39,6 +40,7 @@ class WDTXT {
   }) async {
 
     Contact user = Contact(id: auth.info!['galn']);
+    contact.contactSendEvent(SyncUserEvent());
     for(final (i, c) in contact.contacts().indexed) {
       if (c == user) { continue; }
       var place = (await location.getLocationName(c.loc)).getOrDefault("");

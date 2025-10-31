@@ -48,7 +48,7 @@ class MessageRepo {
           message: event.message,
           nonce: event.nonce,
           to: event.to,
-          timestamp: event.timestamp,
+          timestamp: event.timestamp.round(),
         ));
       case UserEvent():
         // _apiService.synchronize();

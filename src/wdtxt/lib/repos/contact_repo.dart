@@ -53,9 +53,8 @@ class ContactRepo {
         _cachedContacts.putIfAbsent(contact, () => false);
         _cachedContacts[contact] = false;
         // print("Contacts length : ${_cachedContacts.length}");
-      case UserEvent():
-        // _apiService.synchronize();
-        print("ContactRepo: nothing to do");
+      case SyncUserEvent():
+        _apiService.synchronize();
       default:
         print("ContactRepo : no handler for event");
     }
