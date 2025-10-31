@@ -220,7 +220,7 @@ async function getAllEventsFrom(user, from) {
                 var f = getFromMsgEvent(e);
                 var ts = parseInt(f[0].split('-')[0])/1000;
                 if(f[1][0] === user || f[1][3] === user)
-                    events[EIDMSGADD].push([ts, f[1]].flat());
+                    events[EIDMSGADD].push([ts, f[1], f[1][3] === user].flat());
                 sids[1] = f[0];
             }
         }
