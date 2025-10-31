@@ -19,7 +19,7 @@ class ServerEventContactOffline extends ServerEvent {
 }
 
 class ServerEventMessageDelivery extends ServerEvent {
-  final int timestamp;
+  final double timestamp;
   final String from;
   final String message;
   final String nonce;
@@ -35,3 +35,5 @@ class ServerEventMessageDelivery extends ServerEvent {
     required this.toInbox,
   }): super();
 }
+
+class SyncUserEvent extends UserEvent {}
