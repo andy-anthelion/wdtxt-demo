@@ -42,6 +42,9 @@ class UnreadRepo {
     
     switch(event) {
       case ServerEventMessageDelivery():
+        if(!event.toInbox) {
+          break;
+        }
         var convo = Conversation(id1: event.from, id2: event.to);
         _cachedUnread.putIfAbsent(convo, () => 0);
         _cachedUnread[convo] = _cachedUnread[convo]! + 1;

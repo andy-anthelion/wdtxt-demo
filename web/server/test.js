@@ -78,7 +78,7 @@ async function runTests() {
     // 4.1 JohnDoe sends message to the other JohnDoe
     console.log('\n4.1. JohnDoe sends message to other:');
     const messageResponse2 = await makeRequest('/api/message', 'POST', {
-        to: '+25US...JohnDoe.....',
+        to: '-25US...JohnDoe.....',
         message: "Hello twin!",
         nonce: "45-Nki73E"
     }, tokens.johnDoe);

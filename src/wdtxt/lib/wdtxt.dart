@@ -55,9 +55,12 @@ class WDTXT {
   }) {
 
     var user = Contact(id: auth.info!['galn']);
+    var total = 0;
     unread.getAllUnread(user).forEach((contact, count) {
       print("${contact.name} ($count)");
+      total += count;
     });
+    print("\n Total Unread : $total");
 
   }
 
