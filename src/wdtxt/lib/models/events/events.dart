@@ -24,12 +24,14 @@ class ServerEventMessageDelivery extends ServerEvent {
   final String message;
   final String nonce;
   final String to;
+  final bool toInbox;
 
   ServerEventMessageDelivery({
     required this.timestamp,
     required this.from,
     required this.message,
     required this.nonce,
-    required this.to
+    required this.to,
+    required this.toInbox,
   }): super();
 }

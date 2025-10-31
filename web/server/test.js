@@ -75,6 +75,15 @@ async function runTests() {
     }, tokens.johnDoe);
     console.log(JSON.stringify(messageResponse, null, 2));
 
+    // 4.1 JohnDoe sends message to the other JohnDoe
+    console.log('\n4.1. JohnDoe sends message to other:');
+    const messageResponse2 = await makeRequest('/api/message', 'POST', {
+        to: '+25US...JohnDoe.....',
+        message: "Hello twin!",
+        nonce: "45-Nki73E"
+    }, tokens.johnDoe);
+    console.log(JSON.stringify(messageResponse2, null, 2));
+
     await delay(2000); // 2 second delay
 
     // 5. Sync MaryJane (previously test #4)

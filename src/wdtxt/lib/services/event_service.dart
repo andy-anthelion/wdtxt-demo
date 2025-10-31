@@ -38,6 +38,28 @@ class WDEventService extends EventService{
 
   }
 
+  void _sendMessageEvents
+  (
+    List<List<Object>> messageEvents,
+    EventSink<ServerEvent> eventSink,
+  ){
+    if(messageEvents.isEmpty) {
+      return;
+    }
+
+    for(List<Object> message in messageEvents) {
+      eventSink.add(
+        ServerEventMessageDelivery(
+          timestamp: message[0] as int, 
+          from: message[1] as String, 
+          message: message[2] as String, 
+          nonce: message[3] as String, 
+          to: message[4] as String, 
+          toInbox: message[5] as bool
+        )
+      );
+    }
+  }
 
   @override
   void handleData(Object data, EventSink<ServerEvent> eventSink) {
@@ -54,7 +76,7 @@ class WDEventService extends EventService{
     for(String eventCode in events.keys) {
       switch(eventCode) {
         case "101": _sendContactEvents(events[eventCode]!.cast<String>(), eventSink);
-        case "201": //_sendMessageEvents(events[eventCode]!.cast<Object>(), eventSink);
+        case "201": _sendMessageEvents(events[eventCode]!.cast<List<List<Object>>>(), eventSink);
         default:
       }
     }
