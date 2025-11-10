@@ -38,7 +38,7 @@ class UnreadRepo {
 
   final StreamGroup<Event> _unreadController = StreamGroup<Event>();
 
-  void _handleUnreadEvents(Event event) {
+  Future<void> _handleUnreadEvents(Event event) async {
     
     switch(event) {
       case ServerEventMessageDelivery():
@@ -48,9 +48,8 @@ class UnreadRepo {
         var convo = Conversation(id1: event.from, id2: event.to);
         _cachedUnread.putIfAbsent(convo, () => 0);
         _cachedUnread[convo] = _cachedUnread[convo]! + 1;
-      case UserEvent():
-        // _apiService.synchronize();
-        print("UnreadRepo : nothing to do");
+      case SyncUserEvent():
+        await _apiService.synchronize();
       default:
         print("UnreadRepo : no handler for event");
     }

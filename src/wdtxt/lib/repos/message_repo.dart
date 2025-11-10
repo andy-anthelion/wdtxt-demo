@@ -37,7 +37,7 @@ class MessageRepo {
 
   final StreamGroup<Event> _messageController = StreamGroup<Event>();
 
-  void _handleMessageEvents(Event event) {
+  Future<void> _handleMessageEvents(Event event) async {
     
     switch(event) {
       case ServerEventMessageDelivery():
@@ -50,9 +50,8 @@ class MessageRepo {
           to: event.to,
           timestamp: event.timestamp.round(),
         ));
-      case UserEvent():
-        // _apiService.synchronize();
-        print("MessageRepo : nothing to do");
+      case SyncUserEvent():
+        await _apiService.synchronize();
       default:
         print("MessageRepo : no handler for event");
     }

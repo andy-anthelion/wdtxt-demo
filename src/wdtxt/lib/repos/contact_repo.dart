@@ -39,7 +39,7 @@ class ContactRepo {
 
   final StreamGroup<Event> _contactController = StreamGroup<Event>();
 
-  void _handleContactEvents(Event event) {
+  Future<void> _handleContactEvents(Event event) async {
     // print("handle contact events called in Contact repo ... $event ");
     switch(event) 
     {
@@ -54,7 +54,7 @@ class ContactRepo {
         _cachedContacts[contact] = false;
         // print("Contacts length : ${_cachedContacts.length}");
       case SyncUserEvent():
-        _apiService.synchronize();
+        await _apiService.synchronize();
       default:
         print("ContactRepo : no handler for event");
     }
