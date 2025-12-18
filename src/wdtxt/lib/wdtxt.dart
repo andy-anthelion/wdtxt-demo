@@ -19,6 +19,8 @@ class WDTXT {
 
   WDTXT._();
 
+  static const int DELAY_MS = 200;
+
   static Future<void> handleUser({
     required AuthRepo auth,
     required LocationRepo location,
@@ -41,6 +43,7 @@ class WDTXT {
 
     Contact user = Contact(id: auth.info!['galn']);
     contact.contactSendEvent(SyncUserEvent());
+    await Future.delayed(const Duration(milliseconds: DELAY_MS));
     for(final (i, c) in contact.contacts().indexed) {
       if (c == user) { continue; }
       var place = (await location.getLocationName(c.loc)).getOrDefault("");
