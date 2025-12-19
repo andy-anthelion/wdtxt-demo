@@ -54,12 +54,14 @@ class WDTXT {
     stdin.readLineSync();
   }
 
-  static void handleInbox({
+  static Future<void> handleInbox({
     required AuthRepo auth,
     required UnreadRepo unread,
-  }) {
+  }) async {
 
     var user = Contact(id: auth.info!['galn']);
+    unread.unreadSendEvent(SyncUserEvent());
+    await Future.delayed(Duration(milliseconds: DELAY_MS));
     var total = 0;
     unread.getAllUnread(user).forEach((contact, count) {
       print("${contact.name} ($count)");
@@ -165,7 +167,7 @@ class WDTXT {
           await handleContacts(auth: auth, contact: contact, location: locs);
           break;
         case '3':
-          handleInbox(auth: auth, unread: unread);
+          await handleInbox(auth: auth, unread: unread);
           break;
         case 'q':
           stillRunning = false;
