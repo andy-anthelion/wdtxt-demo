@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 import 'package:wdtxt/models/contact/contact.dart';
+import 'package:wdtxt/models/conversation/conversation.dart';
 import 'package:wdtxt/models/events/events.dart';
 
 import 'package:wdtxt/repos/auth_repo.dart';
@@ -57,14 +58,17 @@ class WDTXT {
   static Future<void> handleInbox({
     required AuthRepo auth,
     required UnreadRepo unread,
+    required MessageRepo message,
   }) async {
 
     var user = Contact(id: auth.info!['galn']);
     unread.unreadSendEvent(SyncUserEvent());
     await Future.delayed(Duration(milliseconds: DELAY_MS));
+
     var total = 0;
     unread.getAllUnread(user).forEach((contact, count) {
-      print("${contact.name} ($count)");
+      var convo = Conversation(id1: user.id, id2: contact.id);
+      print("${contact.name} ($count) ${message.getLatestMessageOf(convo)?.message}");
       total += count;
     });
     print("\n Total Unread : $total");
@@ -167,7 +171,7 @@ class WDTXT {
           await handleContacts(auth: auth, contact: contact, location: locs);
           break;
         case '3':
-          await handleInbox(auth: auth, unread: unread);
+          await handleInbox(auth: auth, message: message, unread: unread);
           break;
         case 'q':
           stillRunning = false;
