@@ -6,6 +6,7 @@ import 'package:wdtxt/models/conversation/conversation.dart';
 import 'package:wdtxt/models/events/events.dart';
 import 'package:wdtxt/models/message/message.dart';
 import 'package:wdtxt/services/api_service.dart';
+import 'package:wdtxt/services/random_service.dart';
 
 class MessageRepo {
 
@@ -14,8 +15,12 @@ class MessageRepo {
   ];
 
   MessageRepo({
-    required ApiService apiService
-  }): _apiService = apiService {
+    required ApiService apiService,
+    required RandomService randomService
+  }):
+    _apiService = apiService,
+    _randomService = randomService
+  {
 
     _messageController.stream.listen(_handleMessageEvents);
     _messageController.add(_messageSES);
@@ -24,6 +29,7 @@ class MessageRepo {
   }
 
   final ApiService _apiService;
+  final RandomService _randomService;
 
   final Map<Conversation,List<Message>> _cachedMessage = {};
   

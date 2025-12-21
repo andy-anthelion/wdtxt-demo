@@ -15,6 +15,7 @@ import 'package:wdtxt/repos/unread_repo.dart';
 import 'package:wdtxt/services/api_service.dart';
 import 'package:wdtxt/services/event_service.dart';
 import 'package:wdtxt/services/location_service.dart';
+import 'package:wdtxt/services/random_service.dart';
 
 class WDTXT {
 
@@ -162,6 +163,7 @@ class WDTXT {
     //
     // services
     //
+    RandomService randomService = RandomService();
     EventService eventService = WDEventService();
     LocationService locationService = LocationService();
     ApiService apiService = ApiService(
@@ -181,7 +183,10 @@ class WDTXT {
 
     ContactRepo contact = ContactRepo(apiService: apiService);
 
-    MessageRepo message = MessageRepo(apiService: apiService);
+    MessageRepo message = MessageRepo(
+      apiService: apiService,
+      randomService: randomService,
+    );
 
     UnreadRepo unread = UnreadRepo(apiService: apiService);
 
