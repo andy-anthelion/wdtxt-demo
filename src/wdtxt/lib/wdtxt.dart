@@ -57,21 +57,45 @@ class WDTXT {
 
   static Future<void> handleInbox({
     required AuthRepo auth,
-    required UnreadRepo unread,
+    required ContactRepo contact,
     required MessageRepo message,
+    required UnreadRepo unread,
   }) async {
 
     var user = Contact(id: auth.info!['galn']);
+    var contactList = contact.contacts()
+      .where((c) => c != user)
+      .toList();
     unread.unreadSendEvent(SyncUserEvent());
     await Future.delayed(Duration(milliseconds: DELAY_MS));
 
+    var i = 0;
     var total = 0;
-    unread.getAllUnread(user).forEach((contact, count) {
-      var convo = Conversation(id1: user.id, id2: contact.id);
-      print("${contact.name} ($count) ${message.getLatestMessageOf(convo)?.message}");
+    for(final c in contactList) { 
+      var count = unread.getUnreadCountOf(Conversation(id1: user.id, id2: c.id));
       total += count;
-    });
-    print("\n Total Unread : $total");
+      i++;
+      print("$i) ${c.name} ${count > 0 ? "($count)" : "" }");
+    }
+    print("\nEnter inbox no (1 - $i): ");
+    
+    int choice = int.tryParse(stdin.readLineSync()?.toLowerCase() ?? "") ?? 0;
+    if(choice == 0) {
+      print("Invalid choice!");
+      return;
+    }
+
+    var messageList = message.getAllMessagesOf(Conversation(
+      id1: user.id, 
+      id2: contactList[choice-1].id,  
+    ));
+
+    for(final m in messageList) {
+      print("- ${m.message}");
+    }
+
+    print("\npress enter key to continue...");
+    stdin.readLineSync();
 
   }
 
@@ -171,7 +195,7 @@ class WDTXT {
           await handleContacts(auth: auth, contact: contact, location: locs);
           break;
         case '3':
-          await handleInbox(auth: auth, message: message, unread: unread);
+          await handleInbox(auth: auth, contact: contact, message: message, unread: unread);
           break;
         case 'q':
           stillRunning = false;
