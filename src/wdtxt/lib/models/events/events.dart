@@ -47,3 +47,15 @@ class UserEventReadMessage extends UserEvent {
     required this.id2,
   }): super();
 }
+
+class UserEventSendMessage extends UserEvent {
+  final String from;
+  final String message;
+  final String to;
+
+  UserEventSendMessage({
+    required this.from,
+    required this.message,
+    required this.to,
+  }): super();
+}
