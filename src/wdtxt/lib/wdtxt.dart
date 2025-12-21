@@ -92,11 +92,13 @@ class WDTXT {
     ));
 
     for(final m in messageList) {
-      print("- ${m.message}");
+      var label = m.from == user.id ? "You" : Contact(id: m.from).name;
+      var time = DateTime.fromMillisecondsSinceEpoch(m.timestamp * 1000);
+      print("${time} - ${label} : ${m.message}"); 
     }
 
     unread.unreadSendEvent(UserEventReadMessage(
-      id1: user.id,
+      id1: user.id, 
       id2: selectedId,
     ));
 
