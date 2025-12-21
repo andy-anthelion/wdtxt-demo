@@ -36,9 +36,9 @@ class ServerEventMessageDelivery extends ServerEvent {
   }): super();
 }
 
-class SyncUserEvent extends UserEvent {}
+class UserEventSync extends UserEvent {}
 
-class ReadMessageUserEvent extends UserEvent {
+class UserEventReadMessage extends UserEvent {
   final String id1;
   final String id2;
 

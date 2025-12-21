@@ -48,9 +48,9 @@ class UnreadRepo {
         var convo = Conversation(id1: event.from, id2: event.to);
         _cachedUnread.putIfAbsent(convo, () => 0);
         _cachedUnread[convo] = _cachedUnread[convo]! + 1;
-      case SyncUserEvent():
+      case UserEventSync():
         await _apiService.synchronize();
-      case ReadMessageUserEvent():
+      case UserEventReadMessage():
         var convo = Conversation(id1: event.id1, id2: event.id2);
         if(_cachedUnread.containsKey(convo)) {
           _cachedUnread[convo] = 0;

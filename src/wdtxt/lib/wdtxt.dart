@@ -43,7 +43,7 @@ class WDTXT {
   }) async {
 
     Contact user = Contact(id: auth.info!['galn']);
-    contact.contactSendEvent(SyncUserEvent());
+    contact.contactSendEvent(UserEventSync());
     await Future.delayed(const Duration(milliseconds: DELAY_MS));
     for(final (i, c) in contact.contacts().indexed) {
       if (c == user) { continue; }
@@ -66,7 +66,7 @@ class WDTXT {
     var contactList = contact.contacts()
       .where((c) => c != user)
       .toList();
-    unread.unreadSendEvent(SyncUserEvent());
+    unread.unreadSendEvent(UserEventSync());
     await Future.delayed(Duration(milliseconds: DELAY_MS));
 
     var i = 0;
@@ -95,7 +95,7 @@ class WDTXT {
       print("- ${m.message}");
     }
 
-    unread.unreadSendEvent(ReadMessageUserEvent(
+    unread.unreadSendEvent(UserEventReadMessage(
       id1: user.id,
       id2: selectedId,
     ));

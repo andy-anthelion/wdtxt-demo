@@ -50,7 +50,7 @@ class MessageRepo {
           to: event.to,
           timestamp: event.timestamp.round(),
         ));
-      case SyncUserEvent():
+      case UserEventSync():
         await _apiService.synchronize();
       default:
         print("MessageRepo : no handler for event");
