@@ -62,13 +62,13 @@ class WDTXT {
     required UnreadRepo unread,
   }) async {
 
+    unread.unreadSendEvent(UserEventSync());
+    await Future.delayed(Duration(milliseconds: DELAY_MS));
+
     var user = Contact(id: auth.info!['galn']);
     var contactList = contact.contacts()
       .where((c) => c != user)
       .toList();
-    unread.unreadSendEvent(UserEventSync());
-    await Future.delayed(Duration(milliseconds: DELAY_MS));
-
     var i = 0;
     var total = 0;
     for(final c in contactList) { 
@@ -106,6 +106,56 @@ class WDTXT {
     stdin.readLineSync();
 
   }
+
+  static Future<void> handleMessage({
+    required AuthRepo auth,
+    required ContactRepo contact,
+    required MessageRepo message,
+  }) async {
+
+    contact.contactSendEvent(UserEventSync());
+    await Future.delayed(Duration(milliseconds: DELAY_MS));
+
+    var user = Contact(id: auth.info!['galn']);
+    var contactList = contact.contacts()
+      .where((c) => c != user)
+      .toList();
+    var i = 0;
+    
+    print("Contacts: ${contactList.length}");
+    if(contactList.length == 0) {
+      return;
+    }
+
+    for(final c in contactList) { 
+      i++;
+      print("$i) ${c.name} ${c.age}${c.gender}");
+    }
+    print("\nEnter contact to send message (1 - $i): ");
+
+    int choice = int.tryParse(stdin.readLineSync()?.toLowerCase() ?? "") ?? 0;
+    if(choice == 0) {
+      print("Invalid choice!");
+      return;
+    }
+
+    var selectedContact = contactList[choice - 1];
+
+    print("\nEnter message for ${selectedContact.name}: ");
+    String? msg = stdin.readLineSync();
+
+    if(msg == null) {
+      print("Invalid message");
+    }
+
+    message.messageSendEvent(UserEventSendMessage(
+      from: user.id,
+      message: msg ?? "",
+      to: selectedContact.id,
+    ));
+    await Future.delayed(Duration(milliseconds: DELAY_MS));
+  }
+
 
   static Future<void> run(List<String> arguments) async {
     
@@ -191,7 +241,8 @@ class WDTXT {
       print('1) User');
       print('2) Contacts');
       print('3) Inbox');
-      print('\nEnter your choice (1-3) or (q)uit: ');
+      print('4) Message');
+      print('\nEnter your choice (1-4) or (q)uit: ');
 
       String? choice = stdin.readLineSync()?.toLowerCase();
 
@@ -204,6 +255,9 @@ class WDTXT {
           break;
         case '3':
           await handleInbox(auth: auth, contact: contact, message: message, unread: unread);
+          break;
+        case '4':
+          await handleMessage(auth: auth, contact: contact, message: message);
           break;
         case 'q':
           stillRunning = false;
