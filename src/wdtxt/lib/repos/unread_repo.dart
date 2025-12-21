@@ -50,6 +50,11 @@ class UnreadRepo {
         _cachedUnread[convo] = _cachedUnread[convo]! + 1;
       case SyncUserEvent():
         await _apiService.synchronize();
+      case ReadMessageUserEvent():
+        var convo = Conversation(id1: event.id1, id2: event.id2);
+        if(_cachedUnread.containsKey(convo)) {
+          _cachedUnread[convo] = 0;
+        }
       default:
         print("UnreadRepo : no handler for event");
     }

@@ -37,3 +37,13 @@ class ServerEventMessageDelivery extends ServerEvent {
 }
 
 class SyncUserEvent extends UserEvent {}
+
+class ReadMessageUserEvent extends UserEvent {
+  final String id1;
+  final String id2;
+
+  ReadMessageUserEvent({
+    required this.id1,
+    required this.id2,
+  }): super();
+}
