@@ -85,14 +85,20 @@ class WDTXT {
       return;
     }
 
+    var selectedId = contactList[choice-1].id;
     var messageList = message.getAllMessagesOf(Conversation(
       id1: user.id, 
-      id2: contactList[choice-1].id,  
+      id2: selectedId,  
     ));
 
     for(final m in messageList) {
       print("- ${m.message}");
     }
+
+    unread.unreadSendEvent(ReadMessageUserEvent(
+      id1: user.id,
+      id2: selectedId,
+    ));
 
     print("\npress enter key to continue...");
     stdin.readLineSync();
