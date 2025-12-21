@@ -42,7 +42,7 @@ class UserEventReadMessage extends UserEvent {
   final String id1;
   final String id2;
 
-  ReadMessageUserEvent({
+  UserEventReadMessage({
     required this.id1,
     required this.id2,
   }): super();
