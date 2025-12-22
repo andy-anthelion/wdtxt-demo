@@ -8,14 +8,14 @@ part of 'message_request.dart';
 
 _MessageRequest _$MessageRequestFromJson(Map<String, dynamic> json) =>
     _MessageRequest(
-      id: json['id'] as String,
+      to: json['to'] as String,
       nonce: json['nonce'] as String,
       message: json['message'] as String,
     );
 
 Map<String, dynamic> _$MessageRequestToJson(_MessageRequest instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'to': instance.to,
       'nonce': instance.nonce,
       'message': instance.message,
     };

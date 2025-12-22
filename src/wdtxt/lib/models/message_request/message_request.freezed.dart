@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MessageRequest {
 
- String get id; String get nonce; String get message;
+ String get to; String get nonce; String get message;
 /// Create a copy of MessageRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $MessageRequestCopyWith<MessageRequest> get copyWith => _$MessageRequestCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MessageRequest&&(identical(other.to, to) || other.to == to)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.message, message) || other.message == message));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,nonce,message);
+int get hashCode => Object.hash(runtimeType,to,nonce,message);
 
 @override
 String toString() {
-  return 'MessageRequest(id: $id, nonce: $nonce, message: $message)';
+  return 'MessageRequest(to: $to, nonce: $nonce, message: $message)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $MessageRequestCopyWith<$Res>  {
   factory $MessageRequestCopyWith(MessageRequest value, $Res Function(MessageRequest) _then) = _$MessageRequestCopyWithImpl;
 @useResult
 $Res call({
- String id, String nonce, String message
+ String to, String nonce, String message
 });
 
 
@@ -65,9 +65,9 @@ class _$MessageRequestCopyWithImpl<$Res>
 
 /// Create a copy of MessageRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nonce = null,Object? message = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? to = null,Object? nonce = null,Object? message = null,}) {
   return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
@@ -155,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String nonce,  String message)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String to,  String nonce,  String message)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MessageRequest() when $default != null:
-return $default(_that.id,_that.nonce,_that.message);case _:
+return $default(_that.to,_that.nonce,_that.message);case _:
   return orElse();
 
 }
@@ -176,10 +176,10 @@ return $default(_that.id,_that.nonce,_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String nonce,  String message)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String to,  String nonce,  String message)  $default,) {final _that = this;
 switch (_that) {
 case _MessageRequest():
-return $default(_that.id,_that.nonce,_that.message);case _:
+return $default(_that.to,_that.nonce,_that.message);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +196,10 @@ return $default(_that.id,_that.nonce,_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String nonce,  String message)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String to,  String nonce,  String message)?  $default,) {final _that = this;
 switch (_that) {
 case _MessageRequest() when $default != null:
-return $default(_that.id,_that.nonce,_that.message);case _:
+return $default(_that.to,_that.nonce,_that.message);case _:
   return null;
 
 }
@@ -211,10 +211,10 @@ return $default(_that.id,_that.nonce,_that.message);case _:
 @JsonSerializable()
 
 class _MessageRequest implements MessageRequest {
-  const _MessageRequest({required this.id, required this.nonce, required this.message});
+  const _MessageRequest({required this.to, required this.nonce, required this.message});
   factory _MessageRequest.fromJson(Map<String, dynamic> json) => _$MessageRequestFromJson(json);
 
-@override final  String id;
+@override final  String to;
 @override final  String nonce;
 @override final  String message;
 
@@ -231,16 +231,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MessageRequest&&(identical(other.to, to) || other.to == to)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.message, message) || other.message == message));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,nonce,message);
+int get hashCode => Object.hash(runtimeType,to,nonce,message);
 
 @override
 String toString() {
-  return 'MessageRequest(id: $id, nonce: $nonce, message: $message)';
+  return 'MessageRequest(to: $to, nonce: $nonce, message: $message)';
 }
 
 
@@ -251,7 +251,7 @@ abstract mixin class _$MessageRequestCopyWith<$Res> implements $MessageRequestCo
   factory _$MessageRequestCopyWith(_MessageRequest value, $Res Function(_MessageRequest) _then) = __$MessageRequestCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String nonce, String message
+ String to, String nonce, String message
 });
 
 
@@ -268,9 +268,9 @@ class __$MessageRequestCopyWithImpl<$Res>
 
 /// Create a copy of MessageRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nonce = null,Object? message = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? to = null,Object? nonce = null,Object? message = null,}) {
   return _then(_MessageRequest(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+to: null == to ? _self.to : to // ignore: cast_nullable_to_non_nullable
 as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,

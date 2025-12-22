@@ -6,7 +6,7 @@ part 'message_request.g.dart';
 @freezed
 abstract class MessageRequest with _$MessageRequest{
   const factory MessageRequest({
-    required String id,
+    required String to,
     required String nonce,
     required String message,
   }) = _MessageRequest;
