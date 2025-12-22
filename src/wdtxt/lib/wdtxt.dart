@@ -46,10 +46,20 @@ class WDTXT {
     Contact user = Contact(id: auth.info!['galn']);
     contact.contactSendEvent(UserEventSync());
     await Future.delayed(const Duration(milliseconds: DELAY_MS));
-    for(final (i, c) in contact.contacts().indexed) {
-      if (c == user) { continue; }
+    var contactList = contact.contacts()
+      .where((c) => c != user)
+      .toList();
+    
+    if(contactList.isEmpty) {
+      print("\nNo Contacts");
+      return;
+    }
+
+    var i = 0;
+    for(final c in contactList) {
+      i++;
       var place = (await location.getLocationName(c.loc)).getOrDefault("");
-      print("${i+1}) ${c.name} ${c.age} ${c.gender} - $place");
+      print("$i) ${c.name} ${c.age} ${c.gender} - $place");
     }
 
     print("\npress enter key to continue...");
@@ -72,14 +82,21 @@ class WDTXT {
       .toList();
     var i = 0;
     var total = 0;
+
+    if(contactList.isEmpty) {
+      print("\nNo Contacts!");
+      return;
+    }
+
     for(final c in contactList) { 
       var count = unread.getUnreadCountOf(Conversation(id1: user.id, id2: c.id));
       total += count;
       i++;
       print("$i) ${c.name} ${count > 0 ? "($count)" : "" }");
     }
+    print("\nTotal = $total");
     print("\nEnter inbox no (1 - $i): ");
-    
+
     int choice = int.tryParse(stdin.readLineSync()?.toLowerCase() ?? "") ?? 0;
     if(choice == 0) {
       print("Invalid choice!");
@@ -95,7 +112,7 @@ class WDTXT {
     for(final m in messageList) {
       var label = m.from == user.id ? "You" : Contact(id: m.from).name;
       var time = DateTime.fromMillisecondsSinceEpoch(m.timestamp * 1000);
-      print("${time} - ${label} : ${m.message}"); 
+      print("$time - $label : ${m.message}"); 
     }
 
     unread.unreadSendEvent(UserEventReadMessage(
@@ -123,8 +140,8 @@ class WDTXT {
       .toList();
     var i = 0;
     
-    print("Contacts: ${contactList.length}");
-    if(contactList.length == 0) {
+    if(contactList.isEmpty) {
+      print("\nNo Contacts!");
       return;
     }
 

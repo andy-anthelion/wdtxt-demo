@@ -15,10 +15,10 @@ class RandomService {
   Future<String> generateNonce() async {
     final len = _nonceLetters.length;
     String nonce = '';
-    final _random = Random.secure();
+    final random = Random.secure();
     var size = _nonceLength;
     while (0 < size--) {
-      nonce += _nonceLetters[_random.nextInt(len)];
+      nonce += _nonceLetters[random.nextInt(len)];
     }
     return nonce;
   }

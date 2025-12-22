@@ -61,7 +61,6 @@ class MessageRepo {
         await _apiService.synchronize();
       case UserEventSendMessage():
         var nonce = await _randomService.generateNonce();
-        print("$nonce, ${event.to}, ${event.message}");
         await _apiService.message(MessageRequest(
           to: event.to, 
           nonce: nonce, 
