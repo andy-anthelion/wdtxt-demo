@@ -5,6 +5,7 @@ import 'package:async/async.dart';
 import 'package:wdtxt/models/conversation/conversation.dart';
 import 'package:wdtxt/models/events/events.dart';
 import 'package:wdtxt/models/message/message.dart';
+import 'package:wdtxt/models/message_request/message_request.dart';
 import 'package:wdtxt/services/api_service.dart';
 import 'package:wdtxt/services/random_service.dart';
 
@@ -58,6 +59,14 @@ class MessageRepo {
         ));
       case UserEventSync():
         await _apiService.synchronize();
+      case UserEventSendMessage():
+        var nonce = await _randomService.generateNonce();
+        print("$nonce, ${event.to}, ${event.message}");
+        await _apiService.message(MessageRequest(
+          to: event.to, 
+          nonce: nonce, 
+          message: event.message,
+        ));
       default:
         print("MessageRepo : no handler for event");
     }
