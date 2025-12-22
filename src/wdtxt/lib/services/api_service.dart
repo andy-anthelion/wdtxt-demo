@@ -98,8 +98,8 @@ class ApiService {
     try {
 
       final request = await client.post(_host, _port, '/api/message');
-      request.write(jsonEncode(messageRequest));
       _addHeaders(request.headers);
+      request.write(jsonEncode(messageRequest));
       final response = await request.close();
       final stringInfo = await response.transform(utf8.decoder).join();
       // print(stringInfo);
