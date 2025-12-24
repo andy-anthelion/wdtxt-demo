@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:async/async.dart';
+import 'package:result_dart/result_dart.dart' as result_pkg;
+import 'package:async/async.dart' as async_pkg;
 
 import 'package:wdtxt/models/conversation/conversation.dart';
 import 'package:wdtxt/models/events/events.dart';
@@ -42,7 +43,7 @@ class MessageRepo {
   );
   Stream<ServerEvent> get messageEvents => _messageSES;
 
-  final StreamGroup<Event> _messageController = StreamGroup<Event>();
+  final async_pkg.StreamGroup<Event> _messageController = async_pkg.StreamGroup<Event>();
 
   Future<void> _handleMessageEvents(Event event) async {
     
@@ -59,13 +60,6 @@ class MessageRepo {
         ));
       case UserEventSync():
         await _apiService.synchronize();
-      case UserEventSendMessage():
-        var nonce = await _randomService.generateNonce();
-        await _apiService.message(MessageRequest(
-          to: event.to, 
-          nonce: nonce, 
-          message: event.message,
-        ));
       default:
         print("MessageRepo : no handler for event");
     }
@@ -77,6 +71,28 @@ class MessageRepo {
 
   Message? getLatestMessageOf(Conversation convo) {
     return _cachedMessage[convo]!.last;
+  }
+
+  Future<result_pkg.Result<void>> sendMessage({
+    required String from,
+    required String to,
+    required String message,
+  }) async {
+    try {
+      String nonce = await _randomService.generateNonce();
+      final result_pkg.Result<void> result = await _apiService.message(MessageRequest(
+        to: to, 
+        nonce: nonce, 
+        message: message
+      )); 
+      if(result.isError()) {
+        return result;
+      }
+      //TBD add message to waiting
+      return result_pkg.Success(());
+    } on Exception catch(e) {
+      return result_pkg.Failure(e);
+    } 
   }
 
 }
