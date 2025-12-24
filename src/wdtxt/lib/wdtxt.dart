@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:result_dart/result_dart.dart';
 
 import 'package:wdtxt/models/contact/contact.dart';
 import 'package:wdtxt/models/conversation/conversation.dart';
@@ -166,12 +167,15 @@ class WDTXT {
       print("Invalid message");
     }
 
-    message.messageSendEvent(UserEventSendMessage(
-      from: user.id,
-      message: msg ?? "",
-      to: selectedContact.id,
-    ));
-    await Future.delayed(Duration(milliseconds: DELAY_MS));
+    var result = await message.sendMessage(
+      from: user.id, 
+      to: selectedContact.id, 
+      message: msg ?? ""
+    );
+
+    if(result.isError()) {
+      print("Failed to send message!");
+    }
   }
 
 
