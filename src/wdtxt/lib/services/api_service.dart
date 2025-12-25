@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:result_dart/result_dart.dart';
 
 import 'package:wdtxt/models/login_request/login_request.dart';
@@ -16,11 +17,13 @@ class ApiService {
     String? host,
     int? port,
     HttpClient Function()? clientFactory,
+    String? baseUrl,
     StreamTransformer<Object, ServerEvent>? eventTransformer
   }):
   _host = host ?? "localhost",
   _port = port ?? 10000,
   _clientFactory = clientFactory ?? HttpClient.new,
+  _baseUrl = baseUrl ?? "http://localhost:10000",
   _eventTransformer = eventTransformer ?? 
     StreamTransformer<Object, ServerEvent>.fromHandlers(
       handleData: (data, sink) { print("Error! event translator not provided! "); }
@@ -29,6 +32,7 @@ class ApiService {
   final String _host;
   final int _port;
   final HttpClient Function() _clientFactory;
+  final _baseUrl;
   final StreamTransformer<Object, ServerEvent> _eventTransformer;
   
   final StreamController<Object> _serverEventSource = StreamController<Object>.broadcast();
@@ -47,20 +51,16 @@ class ApiService {
   }
 
   Future<Result<String>> login(LoginRequest loginRequest) async {
-    final client = _clientFactory();
+    final client = Dio(BaseOptions(
+      baseUrl: _baseUrl,
+      followRedirects: true,
+      maxRedirects: 3,
+    ));
     try {
-
-      final request = await client.post(_host, _port, '/api/login');
-      request.write(jsonEncode(loginRequest));
-      final response = await request.close();
-      final stringInfo = await response.transform(utf8.decoder).join();
-      // print(stringInfo);
-      final LoginResponse lr = LoginResponse.fromJson(jsonDecode(stringInfo));
+      final response = await client.post('/api/login', data: jsonEncode(loginRequest));
+      final LoginResponse lr = LoginResponse.fromJson(response.data);
       if(response.statusCode == 200) {
-        // print("Has listeners : ${_serverEventSource.hasListener}");
-        // print("Adding events ... ");
         _serverEventSource.sink.add(lr.events);
-        // print("Done adding events! ");
         return Success(lr.token);
       } else {
         return Failure(Exception(lr.notification));
@@ -73,13 +73,17 @@ class ApiService {
   }
 
   Future<Result<void>> synchronize() async {
-    final client = _clientFactory();
+    final client = Dio(BaseOptions(
+      baseUrl: _baseUrl,
+      followRedirects: true,
+      maxRedirects: 3,
+      headers: {
+        HttpHeaders.authorizationHeader: _authHeaderProvider?.call() ?? "",
+      },
+    ));
     try {
-      final request = await client.post(_host, _port, '/api/sync');
-      _addHeaders(request.headers);
-      final response = await request.close();
-      final stringInfo = await response.transform(utf8.decoder).join();
-      final SyncResponse sr = SyncResponse.fromJson(jsonDecode(stringInfo));
+      final response = await client.post('/api/sync');
+      final SyncResponse sr = SyncResponse.fromJson(response.data);
       if(response.statusCode == 200) {
         _serverEventSource.sink.add(sr.events);
         return Success(());
@@ -94,16 +98,18 @@ class ApiService {
   }
 
   Future<Result<void>> message(MessageRequest messageRequest) async {
-    final client = _clientFactory();
+    final client = Dio(BaseOptions(
+      baseUrl: _baseUrl,
+      followRedirects: true,
+      maxRedirects: 3,
+      headers: {
+        HttpHeaders.authorizationHeader: _authHeaderProvider?.call() ?? "",
+      },
+    ));
     try {
 
-      final request = await client.post(_host, _port, '/api/message');
-      _addHeaders(request.headers);
-      request.write(jsonEncode(messageRequest));
-      final response = await request.close();
-      final stringInfo = await response.transform(utf8.decoder).join();
-      // print(stringInfo);
-      final SyncResponse sr = SyncResponse.fromJson(jsonDecode(stringInfo));
+      final response = await client.post('/api/message', data: jsonEncode(messageRequest));
+      final SyncResponse sr = SyncResponse.fromJson(response.data);
       if(response.statusCode == 200) {
         _serverEventSource.sink.add(sr.events);
         return Success(());
@@ -117,5 +123,3 @@ class ApiService {
     }
   }
 }
-
-
