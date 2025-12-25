@@ -181,36 +181,6 @@ class WDTXT {
 
   static Future<void> run(List<String> arguments) async {
     
-    //
-    // services
-    //
-    RandomService randomService = RandomService();
-    EventService eventService = WDEventService();
-    LocationService locationService = LocationService();
-    ApiService apiService = ApiService(
-      eventTransformer: StreamTransformer.fromHandlers(
-        handleData: eventService.handleData,
-        handleError: eventService.handleError,
-        handleDone: eventService.handleDone,
-      ),
-    );
-
-    //
-    // repos
-    //
-    AuthRepo auth = AuthRepo(apiService: apiService);
-
-    LocationRepo locs = LocationRepo(locationService: locationService);
-
-    ContactRepo contact = ContactRepo(apiService: apiService);
-
-    MessageRepo message = MessageRepo(
-      apiService: apiService,
-      randomService: randomService,
-    );
-
-    UnreadRepo unread = UnreadRepo(apiService: apiService);
-
     var parser = ArgParser();
 
     parser.addFlag(
@@ -234,6 +204,7 @@ class WDTXT {
       valueHelp: 'character',
     );
     parser.addOption('location', defaultsTo: 'US...', help: 'Your location');
+    parser.addOption('url', defaultsTo: 'http://localhost:10000', help: 'Server URL');
 
     var results = parser.parse(arguments);
 
@@ -247,6 +218,37 @@ class WDTXT {
     print('Age: ${results['age']}');
     print('Gender: ${results['gender']}');
     print('Location: ${results['location']}');
+
+    //
+    // services
+    //
+    RandomService randomService = RandomService();
+    EventService eventService = WDEventService();
+    LocationService locationService = LocationService();
+    ApiService apiService = ApiService(
+      baseUrl: results['url'],
+      eventTransformer: StreamTransformer.fromHandlers(
+        handleData: eventService.handleData,
+        handleError: eventService.handleError,
+        handleDone: eventService.handleDone,
+      ),
+    );
+
+    //
+    // repos
+    //
+    AuthRepo auth = AuthRepo(apiService: apiService);
+
+    LocationRepo locs = LocationRepo(locationService: locationService);
+
+    ContactRepo contact = ContactRepo(apiService: apiService);
+
+    MessageRepo message = MessageRepo(
+      apiService: apiService,
+      randomService: randomService,
+    );
+
+    UnreadRepo unread = UnreadRepo(apiService: apiService);
 
     var loginResult = await auth.login(
       age: int.parse(results['age']),
